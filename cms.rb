@@ -7,6 +7,7 @@ configure do
   enable :sessions
   set :session_secret, SecureRandom.hex(32)
   set :erb, :escape_html => true
+  set :views, File.join(settings.public_folder, 'views')
 end
 
 helpers do
@@ -18,5 +19,5 @@ before do
 end
 
 get "/" do
-  redirect "/lists"
+  erb :home, layout: :layout
 end
