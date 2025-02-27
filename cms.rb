@@ -14,7 +14,7 @@ helpers do
 end
 
 before do
-  session[:lists] ||= []
+
 end
 
 get "/" do
