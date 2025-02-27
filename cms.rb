@@ -20,6 +20,6 @@ before do
 end
 
 get "/" do
-  @files = Dir.glob("public/files/*").map { |path| path.split("/").last }.sort
+  @files = Dir.glob("data/*").map { |path| path.split("/").last }.sort
   erb :home, layout: :layout
 end
