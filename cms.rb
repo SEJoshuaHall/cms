@@ -16,10 +16,12 @@ helpers do
 end
 
 before do
-
+  root = File.expand_path("..", __FILE__)
 end
 
 get "/" do
-  @files = Dir.glob("data/*").map { |path| path.split("/").last }.sort
-  erb :home, layout: :layout
+  @files = Dir.glob(root + "/data/*").map do |path|
+    File.basename(path)
+  end
+  erb :indexe, layout: :layout
 end
