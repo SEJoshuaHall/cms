@@ -28,6 +28,7 @@ end
 
 get "/:file_name" do
   @file_name = params[:file_name]
-  @contents = File.read(File.join(@root, "data", @file_name))
-  erb :view_file, layout: :layout 
+
+  headers["Content-Type"] = "text/plain"
+  File.read(@file_name)
 end
