@@ -30,5 +30,5 @@ get "/:file_name" do
   @file_name = params[:file_name]
 
   headers["Content-Type"] = "text/plain"
-  File.read(@file_name)
+  File.read(File.join("data", @file_name))
 end

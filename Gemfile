@@ -4,6 +4,8 @@ gem "sinatra"
 gem "sinatra-contrib"
 gem "erubi"
 gem "webrick"
+gem "minitest"
+gem "rack-test"
 
 group :production do
   gem "puma"
