@@ -16,12 +16,18 @@ helpers do
 end
 
 before do
-  root = File.expand_path("..", __FILE__)
+  @root = File.expand_path("..", __FILE__)
 end
 
 get "/" do
-  @files = Dir.glob(root + "/data/*").map do |path|
+  @files = Dir.glob(@root + "/data/*").map do |path|
     File.basename(path)
   end
-  erb :indexe, layout: :layout
+  erb :index, layout: :layout
+end
+
+get "/:file_name" do
+  @file_name = params[:file_name]
+  @contents = File.read(File.join(@root, "data", @file_name))
+  erb :view_file, layout: :layout 
 end
