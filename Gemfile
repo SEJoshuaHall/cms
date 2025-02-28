@@ -6,6 +6,7 @@ gem "erubi"
 gem "webrick"
 gem "minitest"
 gem "rack-test"
+gem "securerandom"
 
 group :production do
   gem "puma"

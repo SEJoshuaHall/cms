@@ -3,10 +3,11 @@ require "sinatra/contrib"
 require "sinatra/reloader" if development?
 require "sinatra/content_for"
 require "tilt/erubi"
+require "securerandom"
 
 configure do
   enable :sessions
-  set :session_secret, SecureRandom.hex(32)
+  set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(32) }
   set :erb, :escape_html => true
   set :views, File.join(settings.public_folder, 'views')
 end
