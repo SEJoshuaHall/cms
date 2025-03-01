@@ -41,7 +41,7 @@ get "/:file_name" do
     file_content = File.read(file_path)
 
     if @file_name.end_with?(".md")
-      headers["Content-Type"] = "text/html"
+      content_type :html
       render_markdown(file_content)
     else
       headers["Content-Type"] = "text/plain"

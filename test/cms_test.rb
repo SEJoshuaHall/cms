@@ -42,4 +42,13 @@ class CMSTest < Minitest::Test
     get "/"
     refute_includes last_response.body, "notafile.ext does not exist"
   end
+
+  def test_viewing_markdown_document
+    get "/test.md"
+
+    assert_equal 200, last_response.status
+    assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
+    assert_includes last_response.body, "here be dragons"
+  end
+
 end
