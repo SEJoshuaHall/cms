@@ -31,9 +31,16 @@ class CMSTest < Minitest::Test
   end
 
   def test_invalid_path
-    get "/invalid"
+    get "/notafile.ext"
 
     assert_includes(last_response.status.to_s, '30')
+    get last_response["Location"]
+
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "notafile.ext does not exist"
+
+    get "/"
+    refute_includes last_response.body, "notafile.ext does not exist"
   end
 
 end
