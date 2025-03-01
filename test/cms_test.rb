@@ -42,5 +42,4 @@ class CMSTest < Minitest::Test
     get "/"
     refute_includes last_response.body, "notafile.ext does not exist"
   end
-
 end
