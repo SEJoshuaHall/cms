@@ -34,7 +34,7 @@ get "/:file_name" do
     headers["Content-Type"] = "text/plain"
     File.read(File.join("data", @file_name))
   else
-    session[:error] = "#{@file_name} does not exist."
+    session[:message] = "#{@file_name} does not exist."
     redirect "/"
   end
 end

@@ -9,10 +9,8 @@
   <body>
     <header></header>
 
-    <% if session[:error] %>
-      <div class="flash error">
-        <p><%= session.delete(:error) %></p>
-      </div>
+    <% if session[:message] %>
+        <p><%= session.delete(:message) %></p>
     <% end %>
 
     <main>
