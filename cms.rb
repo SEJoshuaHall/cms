@@ -30,6 +30,11 @@ end
 get "/:file_name" do
   @file_name = params[:file_name]
 
-  headers["Content-Type"] = "text/plain"
-  File.read(File.join("data", @file_name))
+  if File.exist?(File.join(@root, 'data', @file_name))
+    headers["Content-Type"] = "text/plain"
+    File.read(File.join("data", @file_name))
+  else
+    session[:error] = "#{@file_name} does not exist."
+    redirect "/"
+  end
 end

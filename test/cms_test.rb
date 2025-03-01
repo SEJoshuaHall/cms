@@ -29,4 +29,11 @@ class CMSTest < Minitest::Test
     assert_equal "text/plain", last_response["Content-Type"]
     assert_includes(last_response.body, "ipsum")
   end
+
+  def test_invalid_path
+    get "/invalid"
+
+    assert_includes(last_response.status.to_s, '30')
+  end
+
 end
