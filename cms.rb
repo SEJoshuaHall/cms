@@ -9,6 +9,7 @@ set :erb, :escape_html => false
 configure do
   enable :sessions
   set :session_secret, SecureRandom.hex(64)
+  set :public_folder, File.expand_path("../public", __FILE__)
 end
 
 def data_path
