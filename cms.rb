@@ -23,38 +23,38 @@ helpers do
 end
 
 before do
-  @root = File.expand_path("..", __FILE__)
+
+end
+
+def data_path
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/data", __FILE__)
+  else
+    File.expand_path("../data", __FILE__)
+  end
 end
 
 get "/" do
-  @files = Dir.glob(@root + "/data/*").map do |path|
+  pattern = File.join(data_path, "*")
+  @files = Dir.glob(pattern).map do |path|
     File.basename(path)
   end
-  erb :index, layout: :layout
+  erb :index
 end
 
-get "/:file_name" do
-  @file_name = params[:file_name]
-  file_path = File.join(@root, 'data', @file_name)
+get "/:filename" do
+  file_path = File.join(data_path, params[:filename])
 
   if File.exist?(file_path)
-    file_content = File.read(file_path)
-
-    if @file_name.end_with?(".md")
-      content_type :html
-      render_markdown(file_content)
-    else
-      headers["Content-Type"] = "text/plain"
-      file_content
-    end
+    load_file_content(file_path)
   else
-    session[:message] = "#{@file_name} does not exist."
+    session[:message] = "#{params[:filename]} does not exist."
     redirect "/"
   end
 end
 
 get "/:filename/edit" do
-  file_path = @root + "/data/" + params[:filename]
+  file_path = File.join(data_path, params[:filename])
 
   @filename = params[:filename]
   @content = File.read(file_path)
@@ -63,7 +63,7 @@ get "/:filename/edit" do
 end
 
 post "/:filename" do
-  file_path = @root + "/data/" + params[:filename]
+  file_path = File.join(data_path, params[:filename])
 
   File.write(file_path, params[:content])
 
