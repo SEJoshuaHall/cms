@@ -38,12 +38,20 @@ def load_file_content(path)
   end
 end
 
+def validate_name(name)
+  return nil unless (1..30).cover(name.length)
+end
+
 get "/" do
   pattern = File.join(data_path, "*")
   @files = Dir.glob(pattern).map do |path|
     File.basename(path)
   end
   erb :index
+end
+
+get "/new" do
+  erb :new
 end
 
 get "/:filename" do
@@ -73,4 +81,21 @@ post "/:filename" do
 
   session[:message] = "#{params[:filename]} has been updated."
   redirect "/"
+end
+
+post "/new" do
+  if validate_name(params[:content])
+    file_path = File.join(data_path, params[:content])
+
+    File.write(file_path)
+
+    session[:message] = "#{params[:filename]} was created." 
+  
+    redirect "/"
+
+  else
+    session[:message] = "A name is required." 
+  
+    redirect "/new"
+  end
 end
