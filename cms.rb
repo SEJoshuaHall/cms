@@ -5,6 +5,8 @@ require "redcarpet"
 require "securerandom"
 
 set :erb, :escape_html => false
+set :environment, :development
+set :static_cache_control, [:no_store, :no_cache]
 
 configure do
   enable :sessions
