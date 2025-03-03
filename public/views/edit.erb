@@ -1,10 +1,10 @@
 <h4>Edit contents of <%== @file_name %>:</h4>
 
 <form id="edit" action="/<%== @file_name %>" method="post">
-  <label for="edit"></label>
-  <textarea name="edit" rows="35" cols="100"><%== @file_content %></textarea>
+  <label for="content"></label>
+  <textarea name="content" rows="35" cols="100"><%== @file_content %></textarea>
   <fieldset class="actions">
-    <button id="edit" type="submit">Save</button>
+    <button type="submit" id="edit">Save</button>
     <a href="/">Cancel</a>
   </fieldset>
 </form>
