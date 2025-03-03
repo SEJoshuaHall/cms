@@ -1,10 +1,7 @@
-<h4>Edit contents of <%== @file_name %>:</h4>
-
-<form id="edit" action="/<%== @file_name %>" method="post">
-  <label for="content"></label>
-  <textarea name="content" rows="35" cols="100"><%== @file_content %></textarea>
-  <fieldset class="actions">
-    <button type="submit" id="edit">Save</button>
-    <a href="/">Cancel</a>
-  </fieldset>
+<form method="post" action="/<%= @filename %>">
+  <label for="content">Edit content of <%= @filename %>:</label>
+  <div>
+    <textarea name="content" id="content" rows="20" cols="100"><%= @content %></textarea>
+  </div>
+  <button type="submit">Save Changes</button>
 </form>
