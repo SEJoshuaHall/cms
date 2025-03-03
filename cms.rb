@@ -39,7 +39,7 @@ def load_file_content(path)
 end
 
 def validate_name(name)
-  return nil unless (1..30).cover?(name.length)
+  (1..30).cover?(name.length)
 end
 
 get "/" do
@@ -86,16 +86,12 @@ end
 post "/new" do
   if validate_name(params[:doc_name])
     file_path = File.join(data_path, params[:doc_name])
-
     File.write(file_path, '')
-
     session[:message] = "#{params[:doc_name]} was created." 
-  
     redirect "/"
 
   else
     session[:message] = "A name is required." 
-  
     redirect "/new"
   end
 end
