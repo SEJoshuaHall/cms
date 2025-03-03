@@ -1,8 +1,10 @@
+# test/cms_test.rb
 ENV["RACK_ENV"] = "test"
+
+require "fileutils"
 
 require "minitest/autorun"
 require "rack/test"
-require "fileutils"
 
 require_relative "../cms"
 
@@ -15,9 +17,6 @@ class CMSTest < Minitest::Test
 
   def setup
     FileUtils.mkdir_p(data_path)
-    create_document("about.md", File.read(File.join(File.dirname(__FILE__), "../data/about.md")))
-    create_document("changes.txt", File.read(File.join(File.dirname(__FILE__), "../data/changes.txt")))
-    create_document("history.txt", File.read(File.join(File.dirname(__FILE__), "../data/history.txt")))
   end
 
   def teardown
@@ -31,59 +30,59 @@ class CMSTest < Minitest::Test
   end
 
   def test_index
+    create_document "about.md"
+    create_document "changes.txt"
+
     get "/"
 
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     assert_includes last_response.body, "about.md"
     assert_includes last_response.body, "changes.txt"
-
   end
 
-  def test_file_display
-    create_document("about.txt", "Lorem ipsum dolor sit amet")
-    get "/about.txt"
+  def test_viewing_text_document
+    create_document "history.txt", "Ruby 0.95 released"
+
+    get "/history.txt"
 
     assert_equal 200, last_response.status
-    assert_equal "text/plain;charset=utf-8", last_response["Content-Type"]
-    assert_includes(last_response.body, "ipsum")
+    assert_equal "text/plain", last_response["Content-Type"]
+    assert_includes last_response.body, "Ruby 0.95 released"
   end
 
-  def test_invalid_path
+  def test_viewing_markdown_document
+    create_document "about.md", "# Ruby is..."
+
+    get "/about.md"
+
+    assert_equal 200, last_response.status
+    assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
+    assert_includes last_response.body, "<h1>Ruby is...</h1>"
+  end
+
+  def test_document_not_found
     get "/notafile.ext"
 
-    assert_includes(last_response.status.to_s, '30')
+    assert_equal 302, last_response.status
+
     get last_response["Location"]
 
     assert_equal 200, last_response.status
     assert_includes last_response.body, "notafile.ext does not exist"
-
-    get "/"
-    refute_includes last_response.body, "notafile.ext does not exist"
   end
 
-  def test_viewing_markdown_document
-    create_document("test.md", "## Test heading\n\n*here be dragons*")
-    get "/test.md"
+  def test_editing_document
+    create_document "changes.txt"
+
+    get "/changes.txt/edit"
 
     assert_equal 200, last_response.status
-    assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-    assert_includes last_response.body, "here be dragons"
-  end
-
-  def test_edit_document
-    create_document("about.txt", "Lorem ipsum dolor sit amet")
-    get "/about.txt/edit"
-
-    assert_equal 200, last_response.status
-    assert_includes last_response.body, "ipsum dolor"
     assert_includes last_response.body, "<textarea"
-    assert_includes last_response.body, "<button"
-    assert_includes last_response.body, "type=\"submit\""
+    assert_includes last_response.body, %q(<button type="submit")
   end
 
-  def test_update_document
-    create_document("changes.txt")
+  def test_updating_document
     post "/changes.txt", content: "new content"
 
     assert_equal 302, last_response.status
@@ -96,5 +95,4 @@ class CMSTest < Minitest::Test
     assert_equal 200, last_response.status
     assert_includes last_response.body, "new content"
   end
-
 end

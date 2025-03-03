@@ -1,29 +1,11 @@
 require "sinatra"
-require "sinatra/contrib"
-require "sinatra/reloader" if development?
-require "sinatra/content_for"
+require "sinatra/reloader"
 require "tilt/erubi"
-require "securerandom"
 require "redcarpet"
 
 configure do
   enable :sessions
-  set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(32) }
-  set :erb, :escape_html => true
-  set :views, File.join(settings.public_folder, 'views')
-  # Make the markdown processor available to the entire application
-  set :markdown, Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-end
-
-helpers do
-  # Helper method to render markdown
-  def render_markdown(text)
-    settings.markdown.render(text)
-  end
-end
-
-before do
-
+  set :session_secret, 'super secret'
 end
 
 def data_path
@@ -34,16 +16,19 @@ def data_path
   end
 end
 
-def load_file_content(file_path)
-  content = File.read(file_path)
-  file_name = File.basename(file_path)
-  
-  if file_name.end_with?(".md")
-    content_type :html
-    render_markdown(content)
-  else
-    content_type :text
+def render_markdown(text)
+  markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+  markdown.render(text)
+end
+
+def load_file_content(path)
+  content = File.read(path)
+  case File.extname(path)
+  when ".txt"
+    headers["Content-Type"] = "text/plain"
     content
+  when ".md"
+    render_markdown(content)
   end
 end
 
