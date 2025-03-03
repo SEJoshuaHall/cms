@@ -4,6 +4,8 @@ require "tilt/erubi"
 require "redcarpet"
 require "securerandom"
 
+set :erb, :escape_html => false
+
 configure do
   enable :sessions
   set :session_secret, SecureRandom.hex(64)
