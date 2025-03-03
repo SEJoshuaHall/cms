@@ -4,11 +4,11 @@
     <title>TITLE</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans">
-    <link rel="stylesheet" href="/stylesheets/application.css">
+    <link rel="stylesheet" href="public/stylesheets/application.css">
   </head>
   <body>
     <% if session[:message] %>
-        <p><%= session.delete(:message) %></p>
+        <p class="message"><%= session.delete(:message) %></p>
     <% end %>
     <%= yield %>
   </body>
