@@ -51,4 +51,10 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "here be dragons"
   end
 
+  def test_edit
+    get "/about.txt/edit"
+
+    assert_equal 200, last_response.status 
+  end
+
 end

@@ -7,14 +7,9 @@
     <link rel="stylesheet" href="/stylesheets/application.css">
   </head>
   <body>
-    <header></header>
-
     <% if session[:message] %>
         <p><%= session.delete(:message) %></p>
     <% end %>
-
-    <main>
-      <%== yield %>
-    </main>
+    <%== yield %>
   </body>
 </html>

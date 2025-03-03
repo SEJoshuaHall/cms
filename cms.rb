@@ -52,3 +52,27 @@ get "/:file_name" do
     redirect "/"
   end
 end
+
+get "/:file_name/edit" do
+  @file_name = params[:file_name]
+  @file_path = File.join(@root, 'data', @file_name)
+
+  if File.exist?(@file_path)
+    @file_content = File.read(@file_path)
+    erb :edit, layout: :layout
+
+  else
+    session[:message] = "#{@file_name} does not exist."
+    redirect "/"
+  end
+end
+
+post "/edit/:file_name" do
+  @file_name = params[:file_name]
+  @file_path = File.join(@root, 'data', @file_name)
+
+  File.write(@file_path, params[:edit])
+  
+  session[:message] = "#{@file_name} has been updated."
+  redirect "/"
+end
