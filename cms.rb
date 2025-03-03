@@ -67,11 +67,11 @@ get "/:file_name/edit" do
   end
 end
 
-post "/edit/:file_name" do
+post "/:file_name" do
   @file_name = params[:file_name]
   @file_path = File.join(@root, 'data', @file_name)
 
-  File.write(@file_path, params[:edit])
+  File.write(@file_path, params[:content])
   
   session[:message] = "#{@file_name} has been updated."
   redirect "/"

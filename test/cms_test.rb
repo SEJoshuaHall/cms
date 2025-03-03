@@ -51,10 +51,27 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "here be dragons"
   end
 
-  def test_edit
+  def test_edit_document
     get "/about.txt/edit"
 
-    assert_equal 200, last_response.status 
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "ipsum dolor"
+    assert_includes last_response.body, "<textarea"
+    assert_includes last_response.body, %q(<button type="submit")
+  end
+
+  def test_update_document
+    post "/changes.txt", content: "new content"
+
+    assert_equal 302, last_response.status
+
+    get last_response["Location"]
+
+    assert_includes last_response.body, "changes.txt has been updated"
+
+    get "/changes.txt"
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "new content"
   end
 
 end
