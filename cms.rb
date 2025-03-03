@@ -2,10 +2,11 @@ require "sinatra"
 require "sinatra/reloader"
 require "tilt/erubi"
 require "redcarpet"
+require "securerandom"
 
 configure do
   enable :sessions
-  set :session_secret, 'super secret'
+  set :session_secret, SecureRandom.hex(64)
 end
 
 def data_path
