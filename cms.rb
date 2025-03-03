@@ -34,6 +34,19 @@ def data_path
   end
 end
 
+def load_file_content(file_path)
+  content = File.read(file_path)
+  file_name = File.basename(file_path)
+  
+  if file_name.end_with?(".md")
+    content_type :html
+    render_markdown(content)
+  else
+    content_type :text
+    content
+  end
+end
+
 get "/" do
   pattern = File.join(data_path, "*")
   @files = Dir.glob(pattern).map do |path|

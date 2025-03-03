@@ -15,10 +15,9 @@ class CMSTest < Minitest::Test
 
   def setup
     FileUtils.mkdir_p(data_path)
-    about = File.open(/about.md)
-    changes = File.open(/changes.txt)
-    create_document ("about.md", about.read)
-    create_document ("changes.txt", changes.read)
+    create_document("about.md", File.read(File.join(File.dirname(__FILE__), "../data/about.md")))
+    create_document("changes.txt", File.read(File.join(File.dirname(__FILE__), "../data/changes.txt")))
+    create_document("history.txt", File.read(File.join(File.dirname(__FILE__), "../data/history.txt")))
   end
 
   def teardown
@@ -42,10 +41,11 @@ class CMSTest < Minitest::Test
   end
 
   def test_file_display
+    create_document("about.txt", "Lorem ipsum dolor sit amet")
     get "/about.txt"
 
     assert_equal 200, last_response.status
-    assert_equal "text/plain", last_response["Content-Type"]
+    assert_equal "text/plain;charset=utf-8", last_response["Content-Type"]
     assert_includes(last_response.body, "ipsum")
   end
 
@@ -63,6 +63,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_viewing_markdown_document
+    create_document("test.md", "## Test heading\n\n*here be dragons*")
     get "/test.md"
 
     assert_equal 200, last_response.status
@@ -71,15 +72,18 @@ class CMSTest < Minitest::Test
   end
 
   def test_edit_document
+    create_document("about.txt", "Lorem ipsum dolor sit amet")
     get "/about.txt/edit"
 
     assert_equal 200, last_response.status
     assert_includes last_response.body, "ipsum dolor"
     assert_includes last_response.body, "<textarea"
-    assert_includes last_response.body, %q(<button type="submit")
+    assert_includes last_response.body, "<button"
+    assert_includes last_response.body, "type=\"submit\""
   end
 
   def test_update_document
+    create_document("changes.txt")
     post "/changes.txt", content: "new content"
 
     assert_equal 302, last_response.status
