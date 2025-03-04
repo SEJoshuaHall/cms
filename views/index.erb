@@ -1,22 +1,25 @@
-<ul>
-  <% @files.each do |file| %>
-    <li>
-      <a href="/<%= file %>"><%= file %></a>
-      <a href="/<%= file %>/edit">edit</a>
-      <form action="/<%= file %>/delete" method="post" class="delete">
-      <button type="submit">Delete</button>
-    </form>
-    </li>
-  <% end %>
-</ul>
 
 <% if session[:signed_in] %>
+  <ul>
+    <% @files.each do |file| %>
+      <li>
+        <a href="/<%= file %>"><%= file %></a>
+        <a href="/<%= file %>/edit">edit</a>
+        <form action="/<%= file %>/delete" method="post" class="delete">
+        <button type="submit">Delete</button>
+      </form>
+      </li>
+    <% end %>
+  </ul>
+
   <p><a href="/new">New Document</a></p>
   <p>Signed in as <%= $USERNAME %></p>
-<% else %>
   <p>
-    <a href="/users/signin">Sign In</a>
     <form action="/signout" method="post">
-    <button type="submit">Signout</button>
+      <button type="submit">Signout</button>
+    </form>
   </p>
+<% else %>
+  <p>You must be signed in to view files.</p><br>
+  <p><a href="/users/signin">Sign In</a></p>
 <% end %>
