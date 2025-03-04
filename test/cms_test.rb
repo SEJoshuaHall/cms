@@ -34,6 +34,10 @@ class CMSTest < Minitest::Test
     last_request.env["rack.session"]
   end
 
+  def admin_session
+    { "rack.session" => { username: "admin" } }
+  end
+
   def test_index
     post "/users/signin", username: "admin", password: "secret"
     create_document "about.md"
@@ -85,6 +89,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_updating_document
+    admin_session
     post "/changes.txt", content: "new content"
 
     assert_equal 302, last_response.status
@@ -114,6 +119,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_create_new_document_without_filename
+    admin_session
     post "/create", filename: ""
     assert_equal 422, last_response.status
     assert_includes last_response.body, "A name is required."

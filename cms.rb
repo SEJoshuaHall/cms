@@ -50,6 +50,12 @@ def validate_name(name)
   !name.empty? && (1..30).cover?(name.length)
 end
 
+def validate_login
+  return true if session[:username]
+  session[:message] = "You must be signed in to do that."
+  redirect '/'
+end
+
 get "/" do
   pattern = File.join(data_path, "*")
   @files = Dir.glob(pattern).map do |path|
@@ -59,10 +65,12 @@ get "/" do
 end
 
 get "/new" do
+  validate_login
   erb :new
 end
 
 post "/create" do
+  validate_login
   filename = params[:filename].to_s
 
   if filename.size == 0
@@ -86,7 +94,6 @@ end
 post "/users/signin" do
   if params[:username] == "admin" && params[:password] == "secret"
     session[:username] = params[:username] 
-    session[:signed_in] = true
     session[:message] = "Welcome"
     redirect "/" 
   else
@@ -97,13 +104,13 @@ post "/users/signin" do
 end
 
 post "/users/signout" do
-  session[:signed_in] = false
   session[:username] = nil
   session[:message] = "You have been signed out." 
   redirect "/" 
 end
 
 get "/:filename/edit" do
+  validate_login
   file_path = File.join(data_path, params[:filename])
 
   @filename = params[:filename]
@@ -113,6 +120,7 @@ get "/:filename/edit" do
 end
 
 post "/:filename/delete" do
+  validate_login
   file_path = File.join(data_path, params[:filename]) 
   File.delete(file_path)
   session[:message] = "#{params[:filename]} has been deleted." 
@@ -132,6 +140,7 @@ get "/:filename" do
 end
 
 post "/:filename" do
+  validate_login
   file_path = File.join(data_path, params[:filename])
 
   File.write(file_path, params[:content])
