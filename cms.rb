@@ -4,18 +4,12 @@ require "tilt/erubi"
 require "redcarpet"
 require "securerandom"
 require "fileutils"
+require "yaml"
 
 set :erb, :escape_html => false
 set :environment, ENV["RACK_ENV"] || :development
 set :static_cache_control, [:no_store, :no_cache]
 
-configure do
-  enable :sessions
-  set :session_secret, SecureRandom.hex(64)
-  set :public_folder, File.expand_path("../public", __FILE__)
-end
-
-# Define the data path
 def data_path
   if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/data", __FILE__)
@@ -25,6 +19,9 @@ def data_path
 end
 
 configure do
+  enable :sessions
+  set :session_secret, SecureRandom.hex(64)
+  set :public_folder, File.expand_path("../public", __FILE__)
   path = data_path
   FileUtils.mkdir_p(path) unless Dir.exist?(path)
   FileUtils.chmod(0755, path) if File.exist?(path)
@@ -54,6 +51,15 @@ def validate_login
   return true if session[:username]
   session[:message] = "You must be signed in to do that."
   redirect '/'
+end
+
+def load_user_credentials
+  credentials_path = if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/users.yml", __FILE__)
+  else
+    File.expand_path("../users.yml", __FILE__)
+  end
+  YAML.load_file(credentials_path)
 end
 
 get "/" do
@@ -92,14 +98,17 @@ get "/users/signin" do
 end
 
 post "/users/signin" do
-  if params[:username] == "admin" && params[:password] == "secret"
-    session[:username] = params[:username] 
-    session[:message] = "Welcome"
-    redirect "/" 
+  credentials = load_user_credentials
+  username = params[:username]
+
+  if credentials.key?(username) && credentials[username] == params[:password]
+    session[:username] = username
+    session[:message] = "Welcome!"
+    redirect "/"
   else
-    session[:message] = "Invalid credentials" 
+    session[:message] = "Invalid credentials"
     status 422
-    erb :signin 
+    erb :signin
   end
 end
 

@@ -15,7 +15,6 @@ class CMSTest < Minitest::Test
   end
 
   def setup
-    # Create test directory with proper permissions
     FileUtils.mkdir_p(data_path)
     FileUtils.chmod(0755, data_path)
   end
@@ -148,7 +147,7 @@ class CMSTest < Minitest::Test
   def test_signin
     post "/users/signin", username: "admin", password: "secret"
     assert_equal 302, last_response.status
-    assert_equal "Welcome", session[:message] 
+    assert_equal "Welcome!", session[:message] 
     assert_equal "admin", session[:username]
 
     get last_response["Location"]
@@ -164,7 +163,7 @@ class CMSTest < Minitest::Test
 
   def test_signout
     post "/users/signin", username: "admin", password: "secret"
-    assert_includes "Welcome", session[:message]
+    assert_includes "Welcome!", session[:message]
 
     post "/users/signout"
     assert_includes "You have been signed out.", session[:message]
