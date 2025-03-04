@@ -1,11 +1,12 @@
 require "sinatra"
-require "sinatra/reloader"
+require "sinatra/reloader" if development?
 require "tilt/erubi"
 require "redcarpet"
 require "securerandom"
+require "fileutils"
 
 set :erb, :escape_html => false
-set :environment, :development
+set :environment, ENV["RACK_ENV"] || :development
 set :static_cache_control, [:no_store, :no_cache]
 
 configure do
@@ -20,6 +21,12 @@ def data_path
   else
     File.expand_path("../data", __FILE__)
   end
+
+    # Ensure the directory exists and has proper permissions
+    FileUtils.mkdir_p(data_directory) unless Dir.exist?(data_directory)
+    FileUtils.chmod(0755, data_directory) if File.exist?(data_directory)
+    
+    data_directory
 end
 
 def render_markdown(text)
