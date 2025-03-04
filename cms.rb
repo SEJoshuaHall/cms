@@ -5,6 +5,7 @@ require "redcarpet"
 require "securerandom"
 require "fileutils"
 require "yaml"
+require "bcrypt"
 
 set :erb, :escape_html => false
 set :environment, ENV["RACK_ENV"] || :development
