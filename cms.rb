@@ -39,7 +39,7 @@ def load_file_content(path)
 end
 
 def validate_name(name)
-  (1..30).cover?(name.length)
+  !name.empty? && (1..30).cover?(name.length)
 end
 
 get "/" do
@@ -74,12 +74,11 @@ get "/:filename/edit" do
   erb :edit
 end
 
-post "/new" do
-  puts "Received params: #{params.inspect}"
-  if validate_name(params[:doc_name])
-    file_path = File.join(data_path, params[:doc_name])
+post "/create" do
+  if validate_name(params[:filename])
+    file_path = File.join(data_path, params[:filename])
     File.write(file_path, '')
-    session[:message] = "#{params[:doc_name]} was created." 
+    session[:message] = "#{params[:filename]} was created." 
     redirect "/"
 
   else
