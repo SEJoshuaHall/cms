@@ -12,6 +12,11 @@
 
 <% if session[:signed_in] %>
   <p><a href="/new">New Document</a></p>
+  <p>Signed in as <%= $USERNAME %></p>
 <% else %>
-  <p><a href="/users/signin">Sign In</a></p>
+  <p>
+    <a href="/users/signin">Sign In</a>
+    <form action="/signout" method="post">
+    <button type="submit">Signout</button>
+  </p>
 <% end %>

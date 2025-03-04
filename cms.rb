@@ -83,8 +83,9 @@ get "/users/signin" do
   erb :signin
 end
 
-post "signin" do
+post "/signin" do
   if params[:username] == "admin" && params[:password] == "secret"
+    $USERNAME = params[:username] 
     session[:signed_in] = true
     session[:message] = "Welcome"
     redirect "/" 
@@ -92,6 +93,12 @@ post "signin" do
     session[:message] = "Invalid credentials" 
     erb :signin 
   end
+end
+
+post "/signout" do
+  session[:signed_in] = false
+  session[:message] = "You have been signed out." 
+  redirect "/" 
 end
 
 get "/:filename/edit" do
