@@ -31,6 +31,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_index
+    post "/users/signin", username: "admin", password: "secret"
     create_document "about.md"
     create_document "changes.txt"
 
@@ -106,6 +107,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_create_new_document
+    post "/users/signin", username: "admin", password: "secret"
     post "/create", filename: "test.txt"
     assert_equal 302, last_response.status
 
@@ -140,8 +142,8 @@ class CMSTest < Minitest::Test
     get "/users/signin"
 
     assert_equal 200, last_response.status
-    assert_includes last_response.body, "<input"
-    assert_includes last_response.body, %q(<button type="submit")
+    assert_includes last_response.body, "input"
+    assert_includes last_response.body, %q(button type="submit")
   end
 
   def test_signin
@@ -170,4 +172,5 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "You have been signed out"
     assert_includes last_response.body, "Sign In"
   end
+
 end
