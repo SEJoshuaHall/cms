@@ -40,8 +40,8 @@ class CMSTest < Minitest::Test
 
   def test_index
     post "/users/signin", username: "admin", password: "secret"
-    create_document "about.md"
-    create_document "changes.txt"
+    create_document("about.md")
+    create_document("changes.txt")
 
     get "/"
 
@@ -52,7 +52,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_viewing_text_document
-    create_document "history.txt", "Ruby 0.95 released"
+    create_document("history.txt", "Ruby 0.95 released")
 
     get "/history.txt"
 
@@ -62,7 +62,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_viewing_markdown_document
-    create_document "about.md", "# Ruby is..."
+    create_document("about.md", "# Ruby is...")
 
     get "/about.md"
 
@@ -79,9 +79,9 @@ class CMSTest < Minitest::Test
   end
 
   def test_editing_document
-    create_document "changes.txt"
+    create_document("changes.txt")
 
-    get "/changes.txt/edit"
+    get "/changes.txt/edit", {}, admin_session
 
     assert_equal 200, last_response.status
     assert_includes last_response.body, "textarea"
@@ -89,8 +89,9 @@ class CMSTest < Minitest::Test
   end
 
   def test_updating_document
-    admin_session
-    post "/changes.txt", content: "new content"
+    create_document("changes.txt")
+
+    post "/changes.txt", { content: "new content" }, admin_session
 
     assert_equal 302, last_response.status
     assert_equal "changes.txt has been updated.", session[:message]
@@ -101,7 +102,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_view_new_document_form
-    get "/new"
+    get "/new", {}, admin_session
 
     assert_equal 200, last_response.status
     assert_includes last_response.body, "<input"
@@ -119,8 +120,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_create_new_document_without_filename
-    admin_session
-    post "/create", filename: ""
+    post "/create", { filename: "" }, admin_session
     assert_equal 422, last_response.status
     assert_includes last_response.body, "A name is required."
   end
@@ -128,7 +128,7 @@ class CMSTest < Minitest::Test
   def test_deleting_document
     create_document("test.txt")
 
-    post "/test.txt/delete"
+    post "/test.txt/delete", {}, admin_session
     assert_equal 302, last_response.status
     assert_equal "test.txt has been deleted.", session[:message]
 
