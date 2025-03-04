@@ -74,16 +74,8 @@ get "/:filename/edit" do
   erb :edit
 end
 
-post "/:filename" do
-  file_path = File.join(data_path, params[:filename])
-
-  File.write(file_path, params[:content])
-
-  session[:message] = "#{params[:filename]} has been updated."
-  redirect "/"
-end
-
 post "/new" do
+  puts "Received params: #{params.inspect}"
   if validate_name(params[:doc_name])
     file_path = File.join(data_path, params[:doc_name])
     File.write(file_path, '')
@@ -94,4 +86,13 @@ post "/new" do
     session[:message] = "A name is required." 
     redirect "/new"
   end
+end
+
+post "/:filename" do
+  file_path = File.join(data_path, params[:filename])
+
+  File.write(file_path, params[:content])
+
+  session[:message] = "#{params[:filename]} has been updated."
+  redirect "/"
 end
