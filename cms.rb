@@ -91,9 +91,7 @@ post "/users/signin" do
     redirect "/" 
   else
     session[:message] = "Invalid credentials" 
-    error 422 do
-      { error: "Invalid credentials" }
-    end
+    status 422
     erb :signin 
   end
 end
