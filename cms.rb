@@ -15,18 +15,20 @@ configure do
   set :public_folder, File.expand_path("../public", __FILE__)
 end
 
+# Define the data path
 def data_path
   if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/data", __FILE__)
   else
     File.expand_path("../data", __FILE__)
   end
+end
 
-    # Ensure the directory exists and has proper permissions
-    FileUtils.mkdir_p(data_directory) unless Dir.exist?(data_directory)
-    FileUtils.chmod(0755, data_directory) if File.exist?(data_directory)
-    
-    data_directory
+# Ensure data directory exists with proper permissions
+configure do
+  path = data_path
+  FileUtils.mkdir_p(path) unless Dir.exist?(path)
+  FileUtils.chmod(0755, path) if File.exist?(path)
 end
 
 def render_markdown(text)

@@ -1,4 +1,3 @@
-# test/cms_test.rb
 ENV["RACK_ENV"] = "test"
 
 require "fileutils"
@@ -16,7 +15,9 @@ class CMSTest < Minitest::Test
   end
 
   def setup
+    # Create test directory with proper permissions
     FileUtils.mkdir_p(data_path)
+    FileUtils.chmod(0755, data_path)
   end
 
   def teardown
