@@ -100,6 +100,14 @@ post "/create" do
   end
 end
 
+post "/:filename/destroy" do
+  file_path = File.join(data_path, params[:filename]) 
+  File.delete(file_path)
+  session[:message] = "#{params[:filename]} has been deleted." 
+
+  redirect "/"
+end
+
 post "/:filename" do
   file_path = File.join(data_path, params[:filename])
 
