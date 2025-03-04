@@ -13,7 +13,7 @@
   </ul>
 
   <p><a href="/new">New Document</a></p>
-  <p>Signed in as <%= $USERNAME %></p>
+  <p>Signed in as <%= session[:username] %>.</p>
   <p>
     <form action="/users/signout" method="post">
       <button type="submit">Signout</button>

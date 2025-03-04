@@ -85,7 +85,7 @@ end
 
 post "/users/signin" do
   if params[:username] == "admin" && params[:password] == "secret"
-    $USERNAME = params[:username] 
+    session[:username] = params[:username] 
     session[:signed_in] = true
     session[:message] = "Welcome"
     redirect "/" 
@@ -98,6 +98,7 @@ end
 
 post "/users/signout" do
   session[:signed_in] = false
+  session[:username] = nil
   session[:message] = "You have been signed out." 
   redirect "/" 
 end
