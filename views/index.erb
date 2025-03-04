@@ -10,4 +10,8 @@
   <% end %>
 </ul>
 
-<p><a href="/new">New Document</a></p>
+<% if session[:signed_in] %>
+  <p><a href="/new">New Document</a></p>
+<% else %>
+  <p><a href="/users/signin">Sign In</a></p>
+<% end %>

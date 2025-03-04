@@ -24,7 +24,6 @@ def data_path
   end
 end
 
-# Ensure data directory exists with proper permissions
 configure do
   path = data_path
   FileUtils.mkdir_p(path) unless Dir.exist?(path)
@@ -63,26 +62,6 @@ get "/new" do
   erb :new
 end
 
-get "/:filename" do
-  file_path = File.join(data_path, params[:filename])
-
-  if File.exist?(file_path)
-    load_file_content(file_path)
-  else
-    session[:message] = "#{params[:filename]} does not exist."
-    redirect "/"
-  end
-end
-
-get "/:filename/edit" do
-  file_path = File.join(data_path, params[:filename])
-
-  @filename = params[:filename]
-  @content = File.read(file_path)
-
-  erb :edit
-end
-
 post "/create" do
   filename = params[:filename].to_s
 
@@ -100,12 +79,47 @@ post "/create" do
   end
 end
 
+get "/users/signin" do
+  erb :signin
+end
+
+post "signin" do
+  if params[:username] == "admin" && params[:password] == "secret"
+    session[:signed_in] = true
+    session[:message] = "Welcome"
+    redirect "/" 
+  else
+    session[:message] = "Invalid credentials" 
+    erb :signin 
+  end
+end
+
+get "/:filename/edit" do
+  file_path = File.join(data_path, params[:filename])
+
+  @filename = params[:filename]
+  @content = File.read(file_path)
+
+  erb :edit
+end
+
 post "/:filename/delete" do
   file_path = File.join(data_path, params[:filename]) 
   File.delete(file_path)
   session[:message] = "#{params[:filename]} has been deleted." 
 
   redirect "/"
+end
+
+get "/:filename" do
+  file_path = File.join(data_path, params[:filename])
+
+  if File.exist?(file_path)
+    load_file_content(file_path)
+  else
+    session[:message] = "#{params[:filename]} does not exist."
+    redirect "/"
+  end
 end
 
 post "/:filename" do
