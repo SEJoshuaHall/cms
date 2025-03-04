@@ -75,15 +75,19 @@ get "/:filename/edit" do
 end
 
 post "/create" do
-  if validate_name(params[:filename])
-    file_path = File.join(data_path, params[:filename])
-    File.write(file_path, '')
-    session[:message] = "#{params[:filename]} was created." 
-    redirect "/"
+  filename = params[:filename].to_s
 
+  if filename.size == 0
+    session[:message] = "A name is required."
+    status 422
+    erb :new
   else
-    session[:message] = "A name is required." 
-    redirect "/new"
+    file_path = File.join(data_path, filename)
+
+    File.write(file_path, "")
+    session[:message] = "#{params[:filename]} has been created."
+
+    redirect "/"
   end
 end
 
