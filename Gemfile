@@ -8,6 +8,7 @@ gem "minitest"
 gem "rack-test"
 gem "securerandom"
 gem "redcarpet"
+gem "bcrypt"
 
 group :production do
   gem "puma"

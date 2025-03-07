@@ -102,7 +102,7 @@ post "/users/signin" do
   credentials = load_user_credentials
   username = params[:username]
 
-  if credentials.key?(username) && credentials[username] == params[:password]
+  if credentials.key?(username) && credentials[username] == BCrypt::Password.create(params[:password])
     session[:username] = username
     session[:message] = "Welcome!"
     redirect "/"
